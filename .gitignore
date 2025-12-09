@@ -1,5 +1,5 @@
 /bear/
 /bear_SR/
-/renders/
+# /renders/
 *.zip
 /outputs/

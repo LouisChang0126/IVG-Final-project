@@ -5,7 +5,7 @@ export CXX=g++-11
 # 處理圖片數據
 # ns-process-data images --data ./bear --output-dir ./processed_data
 # 開始訓練
-ns-train splatfacto --data ./bear
+# ns-train splatfacto --data ./bear
 ns-train splatfacto --data ./bear nerfstudio-data --downscale-factor 4 # low resolution
 # 觀看
 ns-viewer --load-config outputs/bear/splatfacto/2025-12-09_153213/config.yml

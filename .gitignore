@@ -3,3 +3,4 @@
 # /renders/
 *.zip
 /outputs/
+MIA-VSR/results/

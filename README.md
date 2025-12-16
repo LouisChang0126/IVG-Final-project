@@ -28,13 +28,13 @@ export CXX=/usr/bin/g++-11
 ## nerfstudio指令
 ```bash
 # 訓練3DGS模型
-ns-train splatfacto --data ./bear
+# ns-train splatfacto --data ./bear
 
 # 訓練3DGS模型(低解析度)
 ns-train splatfacto --data ./bear nerfstudio-data --downscale-factor 4
 
 # 觀看訓練完的3DGS模型
-ns-viewer --load-config outputs/bear/splatfacto/2025-12-09_153213/config.yml
+ns-viewer --load-config outputs/bear/splatfacto/2025-12-17_012229/config.yml
 # 可以在http://localhost:7007/ 觀看並且調整render的軌跡(調整完會自動覆蓋舊的)
 
 # 渲染訓練完的3DGS模型成影片
@@ -43,9 +43,9 @@ ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-09_153213/co
     --output-path renders/bear/2025-11-04-10-53-12.mp4
 
 # 渲染訓練完的3DGS模型成圖片
-ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-09_154508/config.yml \
-    --camera-path-filename bear/camera_paths/2025-11-04-10-53-10.json \
-    --output-path renders/bear/low_resolution \
+ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/config.yml \
+    --camera-path-filename bear/camera_paths/old.json \
+    --output-path renders/bear/low_resolution64x64 \
     --output-format images
 ```
 

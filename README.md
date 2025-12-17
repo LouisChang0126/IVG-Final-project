@@ -49,3 +49,47 @@ ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/co
     --output-format images
 ```
 
+# [CVPR 2024 Highlight] Enhancing Video Super-Resolution via Implicit Resampling-based Alignment
+
+## Installation
+
+目前使用 python3.9可以順利運行
+
+```bash
+python3.9 -m venv .venv
+# for powershell
+.venv/bin/Activate.ps1 
+# for bash
+source .venv/bin/activate
+
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+pip install -r requirements.txt
+```
+需手動更改 `.venv\Lib\site-packages\basicsr\data\degradations.py`
+Change line 8:
+
+```Python
+# OLD (Delete this)
+from torchvision.transforms.functional_tensor import rgb_to_grayscale
+```
+To this:
+```Python
+# NEW (Replace with this)
+from torchvision.transforms.functional import rgb_to_grayscale
+```
+
+## Run Demo
+
+Download models from [this link](https://drive.google.com/drive/folders/1MIUK37Izc4IcA_a3eSH-21EXOZO5G5qU?usp=sharing) and put them under `IVG-Final-project/IART/experiments/`.
+
+```bash
+# Run demo on frames under `demo/Vid4_BI`:
+python demo.py
+```
+
+## Data
+
+目前檔案位置 
+- low resolution: `IVG-Final-project/IART/demo/bear`
+- 4x resolution: `IVG-Final-project/IART/demo/bear_results`
+

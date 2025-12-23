@@ -34,7 +34,7 @@ export CXX=/usr/bin/g++-11
 ns-train splatfacto --data ./bear nerfstudio-data --downscale-factor 4
 
 # 觀看訓練完的3DGS模型
-ns-viewer --load-config outputs/bear/splatfacto/2025-12-17_012229/config.yml
+ns-viewer --load-config outputs/bear/splatfacto/2025-12-23_154150/config.yml
 # 可以在http://localhost:7007/ 觀看並且調整render的軌跡(調整完會自動覆蓋舊的)
 
 # 渲染訓練完的3DGS模型成影片
@@ -47,5 +47,37 @@ ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/co
     --camera-path-filename bear/camera_paths/old.json \
     --output-path renders/bear/low_resolution64x64 \
     --output-format images
+```
+
+## pipeline
+```bash
+mkdir SR_bear
+
+# training trajectory to render camera path
+python transforms_to_camerapath.py \
+    --transforms bear/transforms.json \
+    --output bear/camera_paths/20251223.json \
+    --fps 24 \
+    --render-width 400 \
+    --render-height 400
+
+# render from low resolution 3DGS
+ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-23_154150/config.yml \
+    --camera-path-filename bear/camera_paths/20251223.json \
+    --output-path SR_bear/images \
+    --output-format images
+
+# render camera path to training trajectory
+python camerapath_to_transforms.py \
+    --camera_path bear/camera_paths/20251223.json \
+    --output_dir SR_bear \
+    --ext jpg
+
+######################
+##      SR          ##
+######################
+
+# train SR 3DGS
+ns-train splatfacto --data ./SR_bear
 ```
 

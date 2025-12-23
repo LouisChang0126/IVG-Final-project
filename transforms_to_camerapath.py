@@ -99,12 +99,12 @@ def convert_transforms_to_camerapath(
     # Process frames
     # ------------------------------------------------------------
     for frame in frames:
-        w = final_w
-        h = final_h
+        orig_w = int(frame.get("w", data.get("w", final_w)))
+        orig_h = int(frame.get("h", data.get("h", final_h)))
 
         fl_y = frame.get("fl_y", global_fl_y)
         if fl_y is None:
-            fl_y = h / (2 * math.tan(math.radians(default_fov) / 2))
+            raise ValueError("fl_y missing in transforms.json; cannot compute correct FOV")
 
         c2w = np.array(frame["transform_matrix"], dtype=np.float64)
 
@@ -115,8 +115,8 @@ def convert_transforms_to_camerapath(
         c2w[:3, 3] *= scene_scale
         
         matrix_16 = c2w.flatten().tolist()
-        fov = get_fov_degrees(fl_y, h)
-        aspect = w / h
+        fov = get_fov_degrees(fl_y, orig_h)
+        aspect = orig_w / orig_h
 
         keyframes.append({
             "matrix": matrix_16,

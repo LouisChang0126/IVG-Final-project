@@ -51,33 +51,46 @@ ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/co
 
 ## pipeline
 ```bash
-mkdir SR_bear
-
 # training trajectory to render camera path
 python transforms_to_camerapath.py \
     --transforms bear/transforms.json \
-    --output bear/camera_paths/20251223.json \
+    --output bear/camera_paths/248x184.json \
     --fps 24 \
-    --render-width 400 \
-    --render-height 400
+    --render-width 248 \
+    --render-height 184
 
 # render from low resolution 3DGS
 ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-23_154150/config.yml \
-    --camera-path-filename bear/camera_paths/20251223.json \
-    --output-path SR_bear/images \
+    --camera-path-filename bear/camera_paths/248x184.json \
+    --output-path SR_bear/images_low \
     --output-format images
+
+# super resolution
+python MIA-VSR/inference_miavsr.py \
+    --test_name miavsr \
+    --lr_folder SR_bear/images_low \
+    --output_folder SR_bear/images \
+    --save_imgs \
+    --no_tile
 
 # render camera path to training trajectory
 python camerapath_to_transforms.py \
-    --camera_path bear/camera_paths/20251223.json \
+    --camera_path bear/camera_paths/248x184.json \
     --output_dir SR_bear \
-    --ext jpg
-
-######################
-##      SR          ##
-######################
+    --ext png \
+    --scale 4.0
 
 # train SR 3DGS
 ns-train splatfacto --data ./SR_bear
 ```
 
+## MIA-VSR
+```
+python MIA-VSR/inference_miavsr.py \
+--test_name miavsr \
+--lr_folder SR_bear/images_low \
+--output_folder SR_bear/images \
+--save_imgs \
+--no_tile
+
+```

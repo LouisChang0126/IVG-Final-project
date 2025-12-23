@@ -4,3 +4,7 @@
 *.zip
 /outputs/
 MIA-VSR/results/
+*.pyc
+*.pth
+MIA-VSR/archs/__pycache__/
+/__pycache__/

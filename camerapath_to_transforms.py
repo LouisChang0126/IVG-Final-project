@@ -3,7 +3,7 @@ import numpy as np
 import argparse
 from pathlib import Path
 
-def create_exact_transforms(camera_path_filename, output_dir, image_dir="images", extension="jpg"):
+def create_exact_transforms(camera_path_filename, output_dir, image_dir="images", extension="jpg", scale=1.0):
     """
     直接讀取 camera_path.json 的 keyframes，不經過任何插值運算，
     將矩陣原封不動地轉存為 transforms.json。
@@ -31,8 +31,8 @@ def create_exact_transforms(camera_path_filename, output_dir, image_dir="images"
     print(f"偵測到 {num_frames} 個關鍵影格，將直接轉換。")
 
     # 2. 取得全域解析度 (若 keyframe 內無個別設定)
-    render_w = data.get("render_width", 1920)
-    render_h = data.get("render_height", 1080)
+    render_w = int(data.get("render_width", 1920) * scale)
+    render_h = int(data.get("render_height", 1080) * scale)
     
     # 嘗試計算全域焦距 (從 FOV 反推)，作為備用
     # Nerfstudio 存的是 Vertical FOV
@@ -111,7 +111,9 @@ if __name__ == "__main__":
     parser.add_argument("--camera_path", required=True, help="Path to your camera_path.json")
     parser.add_argument("--output_dir", required=True, help="Directory to save transforms.json")
     parser.add_argument("--ext", default="jpg", help="Image extension (e.g. jpg, png)")
+    # 新增 scale 參數
+    parser.add_argument("--scale", type=float, default=1.0, help="Resolution scaling factor (e.g., 4.0 for 4x SR)")
     
     args = parser.parse_args()
 
-    create_exact_transforms(args.camera_path, args.output_dir, extension=args.ext)
+    create_exact_transforms(args.camera_path, args.output_dir, extension=args.ext, scale=args.scale)

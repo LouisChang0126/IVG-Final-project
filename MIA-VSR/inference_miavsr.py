@@ -1,4 +1,8 @@
 '''
+This script was modified for the pipeline of IVG final project.
+don't trust the following usage&command
+'''
+'''
 require
 download the pretrained weights "MIAVSR_REDS_x4.pth" from
 https://drive.google.com/drive/folders/1DvsUP-FVwENIpLyeQPQMHc7QnxX1F5Pd
@@ -110,14 +114,14 @@ def main(args):
     # set suitable value to make sure cuda not out of memory
     interval = args.interval
     # model
-    model_path = '/home/louis/IVG_final/MIA-VSR/experiments/pretrained_models/MIAVSR_REDS_x4.pth'
+    model_path = '/home/louis/IVG-Final-project/MIA-VSR/experiments/pretrained_models/MIAVSR_REDS_x4.pth'
     # test data
     test_name = args.test_name
 
     # lr_folder = 'datasets/REDS4/sharp_bicubic'
     # gt_folder = 'datasets/REDS4/GT'
     lr_folder = args.lr_folder
-    save_folder = f'results/{test_name}'
+    save_folder = f'{args.output_folder}/{test_name}'
     os.makedirs(save_folder, exist_ok=True)
 
     # logger
@@ -136,7 +140,7 @@ def main(args):
                  cpu_cache_length=100,
                  is_low_res_input=True,
                  use_mask=True,
-                 spynet_path='/home/louis/IVG_final/MIA-VSR/experiments/pretrained_models/flownet/spynet_sintel_final-3d2a1287.pth')
+                 spynet_path='/home/louis/IVG-Final-project/MIA-VSR/experiments/pretrained_models/flownet/spynet_sintel_final-3d2a1287.pth')
     model.load_state_dict(torch.load(model_path)['params'], strict=False)
     model.eval()
     model = model.to(device)
@@ -166,11 +170,11 @@ def main(args):
         subfolder_l = sorted(glob.glob(osp.join(lr_folder, '*')))
 
     # for each subfolder
-    subfolder_names = []
+    # subfolder_names = []
     # for subfolder, subfolder_gt in zip(subfolder_l, subfolder_gt_l):
-    for subfolder in subfolder_l:
-        subfolder_name = osp.basename(subfolder)
-        subfolder_names.append(subfolder_name)
+    for subfolder in [subfolder_l,]:
+        # subfolder_name = osp.basename(subfolder)
+        # subfolder_names.append(subfolder_name)
 
         # read lq and gt images
         imgs_lq, imgnames = read_img_seq(subfolder, return_imgname=True)
@@ -180,7 +184,7 @@ def main(args):
         iters = length // interval
 
         # cluster the excluded file into another group
-        if length % interval > 1:
+        if length % interval > 0:
             iters += 1
         
         # inference
@@ -200,7 +204,7 @@ def main(args):
                     img_name = imgnames[name_idx] + '.png'
                     output = tensor2img(outputs[idx], rgb2bgr=True, min_max=(0, 1))
                     if save_imgs:
-                        imwrite(output, osp.join(save_folder, subfolder_name, f'{img_name}'))
+                        imwrite(output, osp.join(args.output_folder, f'{img_name}'))
                     name_idx += 1
             del lq
             del outputs
@@ -211,6 +215,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--test_name', type=str, default="bearsr", help='Store name of the results.')
     parser.add_argument('--lr_folder', type=str, default="/home/louis/IVG_final/bear_SR", help='Path to the low-resolution images folder.')
+    parser.add_argument('--output_folder', type=str, default="results", help='Path to the output images folder.')
     parser.add_argument('--useimportimg', action='store_true', help='Flag to use imported images & return outputs')
     parser.add_argument('--save_imgs', action='store_true', help='Flag to save output images.')
     parser.add_argument('--interval', type=int, default=5, help='Interval for frame selection.')

@@ -88,12 +88,21 @@ ns-render camera-path --load-config outputs/SR_bear/splatfacto/2025-12-24_015100
 ## MIA-VSR
 ```bash
 python MIA-VSR/inference_miavsr.py \
---test_name miavsr \
---lr_folder SR_bear/images_low \
---output_folder SR_bear/images \
---save_imgs \
---no_tile
+    --test_name miavsr \
+    --lr_folder SR_bear/images_low \
+    --output_folder SR_bear/images \
+    --save_imgs \
+    --no_tile
+```
 
+## IART
+Download models from [this link](https://drive.google.com/drive/folders/1MIUK37Izc4IcA_a3eSH-21EXOZO5G5qU?usp=sharing) and put them under `IVG-Final-project/IART/experiments/pretrained_models/`.
+
+```bash
+python IART/inference_iart.py \
+--lr_folder SR_bear/images_low \
+    --output_folder SR_bear/images_IART \
+    --no_tile
 ```
 
 ## JPG/PNG to GIF

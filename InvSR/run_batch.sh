@@ -44,10 +44,12 @@ for img_path in "$INPUT_FOLDER"/*.{jpg,jpeg,png,bmp,webp,JPG,JPEG,PNG}; do
     filename=$(basename "$img_path")
     echo "[Processing] $filename"
     # Execute Python command
-    python InvSR/inference_invsr.py -i "$img_path" -o "$OUTPUT_FOLDER" --num_steps 5
+    python InvSR/inference_invsr.py -i "$img_path" -o "$OUTPUT_FOLDER" --num_steps 5 --cfg_path InvSR/configs/sample-sd-turbo.yaml
 
     ((count++))
 done
+
+rm -rf weights
 
 echo "========================================"
 echo "Task completed! Processed a total of $count images."

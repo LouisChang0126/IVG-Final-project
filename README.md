@@ -24,7 +24,10 @@ export CC=/usr/bin/gcc-11
 export CXX=/usr/bin/g++-11
 ```
 
-
+## quick start
+```bash
+bash ./demo.sh
+```
 ## nerfstudio指令
 ```bash
 # 訓練3DGS模型
@@ -105,7 +108,7 @@ python IART/inference_iart.py \
     --no_tile
 ```
 
-##
+## InvSR
 ```
 ./InvSR/run_batch.sh SR_bear/images_low SR_bear/images_InvSR
 ```

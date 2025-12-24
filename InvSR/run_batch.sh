@@ -44,7 +44,7 @@ for img_path in "$INPUT_FOLDER"/*.{jpg,jpeg,png,bmp,webp,JPG,JPEG,PNG}; do
     filename=$(basename "$img_path")
     echo "[Processing] $filename"
     # Execute Python command
-    python inference_invsr.py -i "$img_path" -o "$OUTPUT_FOLDER" --num_steps 5
+    python InvSR/inference_invsr.py -i "$img_path" -o "$OUTPUT_FOLDER" --num_steps 5
 
     ((count++))
 done

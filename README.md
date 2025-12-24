@@ -105,6 +105,11 @@ python IART/inference_iart.py \
     --no_tile
 ```
 
+##
+```
+./InvSR/run_batch.sh SR_bear/images_low SR_bear/images_InvSR
+```
+
 ## JPG/PNG to GIF
 ```bash
 # cd to img folder

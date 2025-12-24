@@ -5,3 +5,7 @@
 /outputs/
 MIA-VSR/results/
 results/
+*.pyc
+*.pth
+MIA-VSR/archs/__pycache__/
+/__pycache__/

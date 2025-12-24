@@ -111,7 +111,6 @@ if __name__ == "__main__":
     parser.add_argument("--camera_path", required=True, help="Path to your camera_path.json")
     parser.add_argument("--output_dir", required=True, help="Directory to save transforms.json")
     parser.add_argument("--ext", default="jpg", help="Image extension (e.g. jpg, png)")
-    # 新增 scale 參數
     parser.add_argument("--scale", type=float, default=1.0, help="Resolution scaling factor (e.g., 4.0 for 4x SR)")
     
     args = parser.parse_args()

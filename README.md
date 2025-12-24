@@ -37,11 +37,6 @@ ns-train splatfacto --data ./bear nerfstudio-data --downscale-factor 4
 ns-viewer --load-config outputs/bear/splatfacto/2025-12-23_154150/config.yml
 # 可以在http://localhost:7007/ 觀看並且調整render的軌跡(調整完會自動覆蓋舊的)
 
-# 渲染訓練完的3DGS模型成影片
-ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-09_153213/config.yml \
-    --camera-path-filename bear/camera_paths/2025-11-04-10-53-10.json \
-    --output-path renders/bear/2025-11-04-10-53-12.mp4
-
 # 渲染訓練完的3DGS模型成圖片
 ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/config.yml \
     --camera-path-filename bear/camera_paths/old.json \
@@ -82,10 +77,16 @@ python camerapath_to_transforms.py \
 
 # train SR 3DGS
 ns-train splatfacto --data ./SR_bear
+
+# render from SR 3DGS
+ns-render camera-path --load-config outputs/SR_bear/splatfacto/2025-12-24_015100/config.yml \
+    --camera-path-filename bear/camera_paths/992x736.json \
+    --output-path SR_bear/SR_3DGS \
+    --output-format images
 ```
 
 ## MIA-VSR
-```
+```bash
 python MIA-VSR/inference_miavsr.py \
 --test_name miavsr \
 --lr_folder SR_bear/images_low \
@@ -93,4 +94,11 @@ python MIA-VSR/inference_miavsr.py \
 --save_imgs \
 --no_tile
 
+```
+
+## JPG/PNG to GIF
+```bash
+# cd to img folder
+ffmpeg -f image2 -framerate 10 -i %05d.jpg output.gif
+# ffmpeg -f image2 -framerate 10 -i %05d.png output.gif
 ```

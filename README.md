@@ -34,13 +34,8 @@ export CXX=/usr/bin/g++-11
 ns-train splatfacto --data ./bear nerfstudio-data --downscale-factor 4
 
 # 觀看訓練完的3DGS模型
-ns-viewer --load-config outputs/bear/splatfacto/2025-12-17_012229/config.yml
+ns-viewer --load-config outputs/bear/splatfacto/2025-12-23_154150/config.yml
 # 可以在http://localhost:7007/ 觀看並且調整render的軌跡(調整完會自動覆蓋舊的)
-
-# 渲染訓練完的3DGS模型成影片
-ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-09_153213/config.yml \
-    --camera-path-filename bear/camera_paths/2025-11-04-10-53-10.json \
-    --output-path renders/bear/2025-11-04-10-53-12.mp4
 
 # 渲染訓練完的3DGS模型成圖片
 ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/config.yml \
@@ -49,47 +44,61 @@ ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-17_012229/co
     --output-format images
 ```
 
-# [CVPR 2024 Highlight] Enhancing Video Super-Resolution via Implicit Resampling-based Alignment
-
-## Installation
-
-目前使用 python3.9可以順利運行
-
+## pipeline
 ```bash
-python3.9 -m venv .venv
-# for powershell
-.venv/bin/Activate.ps1 
-# for bash
-source .venv/bin/activate
+# training trajectory to render camera path
+python transforms_to_camerapath.py \
+    --transforms bear/transforms.json \
+    --output bear/camera_paths/248x184.json \
+    --fps 24 \
+    --render-width 248 \
+    --render-height 184
 
-pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-pip install -r requirements.txt
+# render from low resolution 3DGS
+ns-render camera-path --load-config outputs/bear/splatfacto/2025-12-23_154150/config.yml \
+    --camera-path-filename bear/camera_paths/248x184.json \
+    --output-path SR_bear/images_low \
+    --output-format images
+
+# super resolution
+python MIA-VSR/inference_miavsr.py \
+    --test_name miavsr \
+    --lr_folder SR_bear/images_low \
+    --output_folder SR_bear/images \
+    --save_imgs \
+    --no_tile
+
+# render camera path to training trajectory
+python camerapath_to_transforms.py \
+    --camera_path bear/camera_paths/248x184.json \
+    --output_dir SR_bear \
+    --ext png \
+    --scale 4.0
+
+# train SR 3DGS
+ns-train splatfacto --data ./SR_bear
+
+# render from SR 3DGS
+ns-render camera-path --load-config outputs/SR_bear/splatfacto/2025-12-24_015100/config.yml \
+    --camera-path-filename bear/camera_paths/992x736.json \
+    --output-path SR_bear/SR_3DGS \
+    --output-format images
 ```
-需手動更改 `.venv\Lib\site-packages\basicsr\data\degradations.py`
-Change line 8:
 
-```Python
-# OLD (Delete this)
-from torchvision.transforms.functional_tensor import rgb_to_grayscale
-```
-To this:
-```Python
-# NEW (Replace with this)
-from torchvision.transforms.functional import rgb_to_grayscale
-```
-
-## Run Demo
-
-Download models from [this link](https://drive.google.com/drive/folders/1MIUK37Izc4IcA_a3eSH-21EXOZO5G5qU?usp=sharing) and put them under `IVG-Final-project/IART/experiments/`.
-
+## MIA-VSR
 ```bash
-# Run demo on frames under `demo/Vid4_BI`:
-python demo.py
+python MIA-VSR/inference_miavsr.py \
+--test_name miavsr \
+--lr_folder SR_bear/images_low \
+--output_folder SR_bear/images \
+--save_imgs \
+--no_tile
+
 ```
 
-## Data
-
-目前檔案位置 
-- low resolution: `IVG-Final-project/IART/demo/bear`
-- 4x resolution: `IVG-Final-project/IART/demo/bear_results`
-
+## JPG/PNG to GIF
+```bash
+# cd to img folder
+ffmpeg -f image2 -framerate 10 -i %05d.jpg output.gif
+# ffmpeg -f image2 -framerate 10 -i %05d.png output.gif
+```

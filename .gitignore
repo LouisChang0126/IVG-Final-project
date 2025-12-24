@@ -4,6 +4,7 @@
 *.zip
 /outputs/
 MIA-VSR/results/
-IART/demo/bear/
-IART/demo/bear_results/low_resolution64x64/
-IART/demo/bear_results/low_resolution200x200/
+*.pyc
+*.pth
+MIA-VSR/archs/__pycache__/
+/__pycache__/

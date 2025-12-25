@@ -1,5 +1,8 @@
 # SuperGaussian
 
+## Canva Slides
+[link](https://www.canva.com/design/DAG4d5-mdqE/H5KurqoN_EUo_b-kdBu-OA/edit?utm_content=DAG4d5-mdqE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Environment install
 
 ```bash
